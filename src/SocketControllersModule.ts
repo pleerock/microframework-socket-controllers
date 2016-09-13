@@ -52,7 +52,7 @@ export class SocketControllersModule implements Module {
         configuration.controllerDirs = this.getSourcePaths(configuration.controllerDirs);
 
         useContainer(this.options.container);
-        const io = createSocketServer(this.configuration.port, this.configuration);
+        const io = createSocketServer(this.configuration.port, configuration);
 
         const socketControllersExports = this.options.container.get(SocketControllersExports);
         socketControllersExports.websocketsIo = io;
