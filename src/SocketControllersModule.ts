@@ -1,8 +1,7 @@
 import {SocketControllersModuleConfig} from "./SocketControllersModuleConfig";
 import {Module, ModuleInitOptions} from "microframework/Module";
-import {useContainer} from "routing-controllers";
+import {useContainer, createSocketServer} from "socket-controllers";
 import {MicroFrameworkBootstrapper} from "microframework/MicroFrameworkBootstrapper";
-import {createSocketServer} from "socket-controllers";
 import {SocketControllersExports} from "./SocketControllersExports";
 
 /**
@@ -44,6 +43,11 @@ export class SocketControllersModule implements Module {
         this.options = options;
         this.configuration = configuration;
         this.framework = framework;
+
+        // note that this must be before socket controller bootstrap, because on bootstrap other modules
+        // that bootstrapped before this module can load same files, and if they do it, they will be
+        // registered in default socket-controllers container
+        useContainer(this.options.container);
     }
 
     onBootstrap(): Promise<any> {
@@ -51,7 +55,6 @@ export class SocketControllersModule implements Module {
         const configuration: SocketControllersModuleConfig = Object.assign({}, this.configuration);
         configuration.controllerDirs = this.getSourcePaths(configuration.controllerDirs);
 
-        useContainer(this.options.container);
         const io = createSocketServer(this.configuration.port, configuration);
 
         const socketControllersExports = this.options.container.get(SocketControllersExports);
