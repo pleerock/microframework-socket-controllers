@@ -53,7 +53,7 @@ export class SocketControllersModule implements Module {
     onBootstrap(): Promise<any> {
 
         const configuration: SocketControllersModuleConfig = Object.assign({}, this.configuration);
-        configuration.controllerDirs = this.getSourcePaths(configuration.controllerDirs);
+        configuration.controllers = this.getSourcePaths(configuration.controllers);
 
         const io = createSocketServer(this.configuration.port, configuration);
 
